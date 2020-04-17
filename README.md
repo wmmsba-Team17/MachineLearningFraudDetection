@@ -124,3 +124,20 @@ test$key <- "test"
 full <- bind_rows(train, test)
 ```
 
+Now that we've built our full dataset, we can identify our categorical variables and identify unique values in them to begin the prcoess of dealing with leftover missing values.
+
+```
+categorical_vars <- c("ProductCD","card1","card2","card3","card4","card5","card6","addr1","addr2","P_emaildomain",
+                      "R_emaildomain","M1","M2","M3","M4","M5","M6","M7","M8","M9","DeviceType","DeviceInfo","id_12",
+                      "id_13","id_14","id_15","id_16","id_17","id_18","id_19","id_20","id_21","id_22","id_23","id_24",
+                      "id_25","id_26","id_27","id_28","id_29","id_30","id_31","id_32","id_33","id_34","id_35","id_36",
+                      "id_37","id_38")
+sapply(full[categorical_vars], function(x) length(unique(x))) %>% sort(decreasing=T) %>% print
+```
+
+From this process, we can see there are two types of missing variables, 'blank' and 'NA'. We can see an example of 'NA' using the categorical variable `DeviceType`, as the following code will show missing values.
+
+```
+full['DeviceType'] %>% table(useNA = 'ifany')
+sum(sapply(full['DeviceType'], as.character)=="", na.rm=T)
+```
