@@ -141,3 +141,36 @@ From this process, we can see there are two types of missing variables, 'blank' 
 full['DeviceType'] %>% table(useNA = 'ifany')
 sum(sapply(full['DeviceType'], as.character)=="", na.rm=T)
 ```
+
+Applying the same thought process we used previously when dealing with missing values, we can calculate the missing proportion with `(missing_rate <- colSums(is.na(full))/nrow(full))` and visually see how many columns are missing values with `hist(missing_rate,xlab='Percent of Values Missing',main='Full Data Missing Values').`
+
+<img src="Full_Missing.png" alt="Missing Values for Full Dataset" width="750"/>
+
+Once again, after calculating the proportion of missing values, we need to drop columns that are missing more than 0.85 of their values.
+
+```
+del_vars <- missing_rate[missing_rate> 0.85] %>% names
+(full <- full[ , !(names(full) %in% del_vars)])
+```
+
+After this we move onto one of the other contributions of my group to the model, namely the idea to convert numerical values to integers with the goal of saving computational memory. Using the below code, the overall size of the file reduces substantial, going in one instance from 2.79 Gb to 1.53 Gb.
+
+```
+(numeric_vars <- inspect_num(full)$col_name)
+
+is_int <- function(x){
+  fnum <- fivenum(x)
+  return(identical(fnum, floor(fnum))) 
+}
+
+tic("check is integer")
+int_idx <- sapply(full[numeric_vars], is_int)
+toc()
+
+int_vars <- names(int_idx)[int_idx]
+paste("Number of numeric variables that we can convert to interger:", length(int_vars))
+
+before <- object.size(full)
+
+invisible(gc())
+```
