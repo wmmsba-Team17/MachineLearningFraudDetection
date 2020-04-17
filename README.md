@@ -14,7 +14,7 @@ For our second team presentation we selected the IEEE-CIS Fraud Detection compet
 
 ### Original Notebook
 
-Looking at the original notebook we decided to critique and build off, there were a lot of aspects we liked and wanted to include in our own solution. Specifically, 
+Looking at the original notebook we decided to critique and build off, there were a lot of aspects we liked and wanted to include in our own solution. Most significantly, we thought the process this notebook used to take care of missing values in the data made a lot of sense given the circumstances of the problem. This might seem like a small point to follow but missing values played a major role in the handling of this data. Many of the columns in this dataset were missing upwards of 80 to 90 percent of their values, so we felt the original was right in dropping many of those columns alltogether. Having said that, we did end up using a lower bar for those columns to be dropped. Additionally we also felt another change that could be made was to change some of the data from numerical values to integer values during the data preparation phase as we felt this would allow us our model to be less computationally intensive than the original code. Finally, although the original model is based around Light GBM, we felt a XGB model would be better. Specifically, we know that XGB models tend to outperform GBM models when dealing with smaller datasets and more training, both of which we felt would be applicable to this problem. With that in mind, we anticipated XGB resulting in a more accurate final model than the original we were basing ours off of, a prediction that did appear to pan out given our score of about 0.96 to the original's 0.93.
 
 --- 
 
