@@ -115,3 +115,12 @@ We can also use `setdiff(drop_train_col, drop_test_col)`to check if the variable
 ### Data Preparation
 
 Entering the data preparation phase, the first thing we need to do is identify our target variable. Given the purpose of this competition was to identify fraudulent transactions, one would be correct in guessing that Y variable is `isFraud`. The problem is that `isFraud` is currently read in R as an integer variable when we want it instead to be a factor, so before we can make full use of it we need to change it using `target_var <- factor(train$isFraud)`. We can then use the `class()` function on `target_var` to ensure the change was made.
+
+Following this, we're able to make the full dataset by binding together `train` and `test`.
+
+```
+train$key <- "train"
+test$key <- "test"
+full <- bind_rows(train, test)
+```
+
