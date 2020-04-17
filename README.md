@@ -182,7 +182,7 @@ Now that we've converted our numeric values to integers, we can deal with our ot
 full[, categorical_vars] <- lapply(full[, categorical_vars], as.factor)
 ```
 
-### Create Model
+### *Create Model*
 
 After prepping our data, we can begin the process of creating our model. The first step to this is setting a seed using `set.seed(5082)`. We can then go through our target `isFraud` variable and sort out rows marked by 'NA'. This gives us our final number of rows which we can then use in performing our train/test split. 
 
