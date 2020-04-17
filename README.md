@@ -78,7 +78,7 @@ print(paste(length(missing_train), 'columns out of', ncol(train), 'have missing 
 print(paste(length(missing_test), 'columns out of', ncol(test), 'have missing values in test'))
 ```
 
-While the above code is helpful for getting a grasp on the overall number of columns missing values, we still don't know how bad the problem is for each individual column. Using our previously defined `missing_train` and `missing_test` numeric_lists, we can divide each by the number of rows in the train and test tables to get and print the proportion of missing values for each column. For a more visual look at the problem we can also create histograms showing how many 
+While the above code is helpful for getting a grasp on the overall number of columns missing values, we still don't know how bad the problem is for each individual column. Using our previously defined `missing_train` and `missing_test` numeric_lists, we can divide each by the number of rows in the train and test tables to get and print the proportion of missing values for each column. For a more visual look at the problem, we can also create histograms showing missing values for the train and test sets. As the resulting charts show, a significant number of columns in both the train and test set are missing more than 80% of their values, suggesting drastic actions may need to be taken.
 
 ```
 (missing_train_pct <- round(missing_train/nrow(train), 2))
@@ -87,3 +87,4 @@ While the above code is helpful for getting a grasp on the overall number of col
 hist(missing_train_pct,xlab = 'Percent of Values Missing',main='Missing Values for Train Columns')
 hist(missing_test_pct,xlab = 'Percent of Values Missing',main='Missing Values for Test Columns')
 ```
+
