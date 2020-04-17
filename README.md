@@ -184,7 +184,7 @@ full[, categorical_vars] <- lapply(full[, categorical_vars], as.factor)
 
 ### *Create Model*
 
-After prepping our data, we can begin the process of creating our model. The first step to this is setting a seed using `set.seed(5082)`. We can then go through our target `isFraud` variable and sort out rows marked by 'NA'. This gives us our final number of rows which we can then use in performing our train/test split. 
+After prepping our data, we can begin the process of creating our model. The first step to this is setting a seed using `set.seed(5082)`. We can then go through our target `isFraud` variable and sort out rows marked by 'NA'. This gives us our final number of rows which we can then use in performing our .8/.2 train/test split. 
 
 ```
 full <- full[!is.na(full$isFraud),]
@@ -213,7 +213,7 @@ dtest <- xgb.DMatrix(data = x_test, label=y_test)
 watchlist <- list(train = dtrain, test = dtest)
 ```
 
-Once our data has been turned into XGB matrices, we're ready to actually train our model. Specifically, we trained our model over the course of 500 rounds with the caveat that training cease should the model's performance not improve for 20 rounds. We can then save the model using `xgb.save(model_xgb, 'ml2_tp2_xgb.model')`. Below the code for the model is a graph showing the model's steady improvement over its first 100 rounds. 
+Once our data has been turned into XGB matrices, we're ready to actually train our model. Specifically, we trained our model over the course of 500 rounds with the caveat that training cease should the model's performance not improve for 20 rounds (It should be noted this can take awhile depending on the machine it's being run on). We can then save the model using `xgb.save(model_xgb, 'ml2_tp2_xgb.model')`. Below the code for the model is a graph showing the model's steady improvement over its first 100 rounds. 
 
 ```
 tic("Start training with xgb.train")
@@ -236,5 +236,9 @@ toc()
 
 Now that our model has been trained, our final step is to use it for predictions. This can through `pred <- predict(model_xgb, x_test)` which, once completed, allows us to calculate our models mse using `mean((pred - y_test)^2)`. In our best iteration of the model, it had a score of .9647 and a mse of .0134.
 
+---
 
+### Reproducability
+
+Over the course of this assignment and in creating our model we have followed the guidelines set in the Machine Learning Repoducability Checklist. For section 1, we've clearly discussed the circumstances of the problem and the time and size complexity of our data and model. For section 2, we haven't made any theoretical claims and therefore don't have any theoretical claims to prove. For section 3, we've been transparent in our handling of the dataset such as with our train/test split, the exclusion of data and preprocessing, and a link to where the data was provided. For section 4, we've shown our dependencies and provided all our training and evaluation code. We've also provided a pretrained model and the results we calculated in addition to the code to find those results. Finally, for section 5, 
 
