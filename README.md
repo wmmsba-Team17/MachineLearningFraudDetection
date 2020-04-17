@@ -14,6 +14,8 @@ For our second team presentation we selected the IEEE-CIS Fraud Detection compet
 
 ### Original Notebook
 
+Looking at the original notebook we decided to critique and build off, there were a lot of aspects we liked and wanted to include in our own solution. Specifically, 
+
 --- 
 
 ### Code Setup
@@ -91,4 +93,9 @@ While the above code is helpful for getting a grasp on the overall number of col
 hist(missing_train_pct,xlab = 'Percent of Values Missing',main='Missing Values for Train Columns')
 hist(missing_test_pct,xlab = 'Percent of Values Missing',main='Missing Values for Test Columns')
 ```
+<img src="Test_Missing.png" alt="Missing Values for Test Columns" width="750"/>
+
+<img src="Train_Missing.png" alt="Missing Values for Train Columns" width="750"/>
+
+
 
