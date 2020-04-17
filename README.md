@@ -68,3 +68,22 @@ If you want, at this point you can check the dimensions of the new train and tes
 head(train)
 ```
 
+After looking at the combined data, we can get started on dealing with its missing variables. As a first step to this, we can use the `is.na()` function in combination with the `colSums()` function to calculate just how many columns in our data have missing values. We can then use print statements to show us a clean look at the scale of the missing values problem. Using the code below, we now know 409 out of 434 train columns and 380 out of 435 test columns are missing values.
+
+```
+missing_train <- colSums(is.na(train))[colSums(is.na(train)) > 0] %>% sort(decreasing=T)
+missing_test <- colSums(is.na(test))[colSums(is.na(test)) > 0] %>% sort(decreasing=T)
+
+print(paste(length(missing_train), 'columns out of', ncol(train), 'have missing values in train'))
+print(paste(length(missing_test), 'columns out of', ncol(test), 'have missing values in test'))
+```
+
+While the above code is helpful for getting a grasp on the overall number of columns missing values, we still don't know how bad the problem is for each individual column. Using our previously defined `missing_train` and `missing_test` numeric_lists, we can divide each by the number of rows in the train and test tables to get and print the proportion of missing values for each column. For a more visual look at the problem we can also create histograms showing how many 
+
+```
+(missing_train_pct <- round(missing_train/nrow(train), 2))
+(missing_test_pct <- round(missing_test/nrow(test), 2))
+
+hist(missing_train_pct,xlab = 'Percent of Values Missing',main='Missing Values for Train Columns')
+hist(missing_test_pct,xlab = 'Percent of Values Missing',main='Missing Values for Test Columns')
+```
