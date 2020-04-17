@@ -195,4 +195,20 @@ train <- full[train.indices,]
 test <- full[-train.indices,]
 ```
 
-In creating our model, we reach the final major change between our model and the notebook we used as our inspiration. While the original notebook uses LightGBM we instead decided to use an XGB modeling strategy instead
+In creating our model, we reach the final major change between from the notebook we used as our inspiration. While the original notebook uses LightGBM as their model base we instead decided to use an XGB modeling strategy. This requires first that we convert our x variables into matrices to fit XGB format requirements. 
+
+```
+x_train <- data.matrix(train %>% select(-isFraud, -TransactionID))
+y_train <- as.numeric(as.factor(train$isFraud))-1
+
+x_test <- data.matrix(test %>% select(-isFraud, -TransactionID))
+y_test <- as.numeric(as.factor(test$isFraud))-1
+```
+
+We now can further convert our data into an XGB Matrix using the `xgb.DMatrix()` function.
+
+```
+dtrain <- xgb.DMatrix(data = x_train, label=y_train) 
+dtest <- xgb.DMatrix(data = x_test, label=y_test)
+watchlist <- list(train = dtrain, test = dtest)
+```
