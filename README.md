@@ -4,7 +4,7 @@
 ### Links
 
 - [Competition Link](https://www.kaggle.com/c/ieee-fraud-detection/notebooks?sortBy=hotness&group=everyone&pageSize=20&competitionId=14242&language=R)
-- [Notebook We Built Off](https://www.kaggle.com/psystat/ieee-extensive-eda-lgb-with-r#Modeling)
+- [Original Notebook](https://www.kaggle.com/psystat/ieee-extensive-eda-lgb-with-r#Modeling)
 
 ### General Background
 
@@ -183,4 +183,16 @@ full[, categorical_vars] <- lapply(full[, categorical_vars], as.factor)
 ```
 
 ### Create Model
+
+After prepping our data, we can begin the process of creating our model. The first step to this is setting a seed using `set.seed(5082)`. We can then go through our target `isFraud` variable and sort out rows marked by 'NA'. This gives us our final number of rows which we can then use in performing our train/test split. 
+
+```
+full <- full[!is.na(full$isFraud),]
+n <- nrow(full)
+
+train.indices <- sample(1:n, 0.8*n)  
+train <- full[train.indices,]
+test <- full[-train.indices,]
+
+```
 
