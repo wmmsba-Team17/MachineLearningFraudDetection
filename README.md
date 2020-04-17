@@ -240,5 +240,9 @@ Now that our model has been trained, our final step is to use it for predictions
 
 ### Reproducability
 
+When thinking about the reproducability of our model, we followed as many of the guidlines set in the Machine Learning Repoducability Checklist as were applicable to our solution. Specifically, we tried to be as transparent as possible when discussing topics such as the circumstances of the problem, the technical complexity of our code, and how we handled and processed our data. This can be seen in the reporting of aspects of our model such as how we handled missing variables or performed our train/test split. We've also tried to accomplish these guidlines in different ways, as can be seen in our inclusion of charts showing the forward progress of our model as it trains as well as the central tendency and variation of its scores. Having said this, there were also some aspects of the guidlines we didn't feel were particular relevant to our soluton, such as the section on theoretical claims. 
+
+
 Over the course of this assignment and in creating our model we have followed the guidelines set in the Machine Learning Repoducability Checklist. For section 1, we've clearly discussed the circumstances of the problem and the time and size complexity of our data and model. For section 2, we haven't made any theoretical claims and therefore don't have any theoretical claims to prove. For section 3, we've been transparent in our handling of the dataset such as with our train/test split, the exclusion of data and preprocessing, and a link to where the data was provided. For section 4, we've shown our dependencies and provided all our training and evaluation code. We've also provided a pretrained model and the results we calculated in addition to the code to find those results. Finally, for section 5, 
+
 
