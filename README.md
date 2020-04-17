@@ -193,6 +193,6 @@ n <- nrow(full)
 train.indices <- sample(1:n, 0.8*n)  
 train <- full[train.indices,]
 test <- full[-train.indices,]
-
 ```
 
+In creating our model, we reach the final major change between our model and the notebook we used as our inspiration. While the original notebook uses LightGBM we instead decided to use an XGB modeling strategy instead
