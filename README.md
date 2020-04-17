@@ -74,6 +74,8 @@ If you want, at this point you can check the dimensions of the new train and tes
 head(train)
 ```
 
+### *Missing Values*
+
 After looking at the combined data, we can get started on dealing with its missing variables. As a first step to this, we can use the `is.na()` function in combination with the `colSums()` function to calculate just how many columns in our data have missing values. We can then use print statements to show us a clean look at the scale of the missing values problem. Using the code below, we now know 409 out of 434 train columns and 380 out of 435 test columns are missing values.
 
 ```
@@ -97,5 +99,19 @@ hist(missing_test_pct,xlab = 'Percent of Values Missing',main='Missing Values fo
 
 <img src="Train_Missing.png" alt="Missing Values for Train Columns" width="750"/>
 
+Specifically, we decided the best way to handle the missing values is to drop the columns that have are missing more than a certain proportion of their values. This is similar to the method used in the original code we critiqued with the exception that, while they used 0.95 as the dividing line, we used 0.85. We can then use the `length()` function on both `drop_test_col` and `drop_train_col` to see how many columns we dropped as a result of this. All else equal, the number of dropped columns from the train table should be 69 and the number of dropped columns from the test table should be 15.
 
+```
+drop_train_col <- names(which(missing_train_pct>0.85))
+(train <- train[ , !(names(train) %in% drop_train_col)])
 
+drop_test_col <- names(which(missing_test_pct>0.85))
+(test <- test[ , !(names(test) %in% drop_test_col)])
+```
+After dropping these columns, we can also use `all(drop_test_col %in% drop_train_col)` to test that all the columns in `test` are also in `train`.
+
+We can also use `setdiff(drop_train_col, drop_test_col)`to check if the variables are the same between the training and test sets.
+
+### Data Preparation
+
+Entering the data preparation phase, the first thing we need to do is identify our target variable. Given the purpose of this competition was to identify fraudulent transactions, one would be correct in guessing that Y variable is `isFraud`. The problem is that `isFraud` is currently read in R as an integer variable when we want it instead to be a factor, so before we can make full use of it we need to change it using `target_var <- factor(train$isFraud)`. We can then use the `class()` function on `target_var` to ensure the change was made.
