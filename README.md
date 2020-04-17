@@ -232,7 +232,9 @@ model_xgb <- xgb.train(data = dtrain,
 toc()
 ```
 
+<img src="AUC.png" alt="AUC Chart" width="750"/>
+
 Now that our model has been trained, our final step is to use it for predictions. This can through `pred <- predict(model_xgb, x_test)` which, once completed, allows us to calculate our models mse using `mean((pred - y_test)^2)`. In our best iteration of the model, it had a score of .9647 and a mse of .0134.
 
-<img src="AUC.png" alt="AUC Chart" width="750"/>
+
 
