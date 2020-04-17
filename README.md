@@ -174,3 +174,13 @@ before <- object.size(full)
 
 invisible(gc())
 ```
+
+Now that we've converted our numeric values to integers, we can deal with our other categorical variables. The key to this process is to do the same thing for our other categorical variables as we did to the `isFraud` variable when identifying it as our target. Specifically, we need to take these variables and turn them into factors. 
+
+```
+(categorical_vars <- inspect_cat(full)$col_name)
+full[, categorical_vars] <- lapply(full[, categorical_vars], as.factor)
+```
+
+### Create Model
+
