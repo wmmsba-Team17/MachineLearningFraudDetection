@@ -4,7 +4,7 @@
 ### Links
 
 - [Competition Link](https://www.kaggle.com/c/ieee-fraud-detection/notebooks?sortBy=hotness&group=everyone&pageSize=20&competitionId=14242&language=R)
-- [Original Notebook](https://www.kaggle.com/psystat/ieee-extensive-eda-lgb-with-r#Modeling)
+- [Original Notebook](https://www.kaggle.com/andrew60909/lgb-starter-r/code)
 
 ### General Background
 
@@ -14,7 +14,7 @@ For our second team presentation we selected the IEEE-CIS Fraud Detection compet
 
 ### Original Notebook
 
-Looking at the original notebook we decided to critique and build off, there were a lot of aspects we liked and wanted to include in our own solution. Most significantly, we thought the process this notebook used to take care of missing values in the data made a lot of sense given the circumstances of the problem. This might seem like a small point to follow but missing values played a major role in the handling of this data. Many of the columns in this dataset were missing upwards of 80 to 90 percent of their values, so we felt the original was right in dropping many of those columns alltogether. Having said that, we did end up using a lower bar for those columns to be dropped. Additionally we also felt another change that could be made was to change some of the data from numerical values to integer values during the data preparation phase as we felt this would allow us our model to be less computationally intensive than the original code. Finally, although the original model is based around Light GBM, we felt a XGB model would be better. Specifically, we know that XGB models tend to outperform GBM models when dealing with smaller datasets and more training, both of which we felt would be applicable to this problem. With that in mind, we anticipated XGB resulting in a more accurate final model than the original we were basing ours off of, a prediction that did appear to pan out given our score of about 0.96 to the original's 0.93.
+Looking at the original notebook we decided to critique and build off, there were a lot of aspects we liked and wanted to include in our own solution. Most significantly, we thought the process this notebook used to take care of missing values in the data made a lot of sense given the circumstances of the problem. Having said that, we did end up using a higher bar for those columns to be dropped (.8 vs .85). Additionally we also felt another change that could be made was to convert some of the data from numerical values to integer values during the data preparation phase. Finally, although the original model is based around Light GBM, we felt an XGB model would be better. Specifically, we know that XGB models tend to outperform GBM models when dealing with smaller datasets and more training, both of which we felt would be applicable to this problem. With that in mind, we anticipated XGB resulting in a more accurate final model than the original we were basing ours off of, a prediction that did appear to pan out given our auc score of about 0.96 to the original's 0.93.
 
 --- 
 
@@ -58,7 +58,7 @@ One aspect we can investigate is Dimensions, which shows us the number of rows a
 > (dim(test_transaction))
 [1] 506691    393
 ```
-We can also use `head(train_transaction)` to get an idea of just how many missing variables we'll need to deal with later on in the process. As you can see by the output, it's a significant amount.
+We can also use `head(train_transaction)` to get an idea of just how many missing variables we'll need to deal with later on in the process.
 
 ```
 TransactionID isFraud TransactionDT TransactionAmt ProductCD card1 card2
@@ -151,7 +151,7 @@ test <- left_join(test_transaction, test_identity)
 rm(train_identity, train_transaction, test_identity, test_transaction)
 ```
 
-If you want, at this point you can check the dimensions of the new train and test tables to confirm the join was done properly and use the `head()` function to see if the addition of the identity tables made our missing values problem worse. Thankfully, at first glance it appears that this isn't the case. The identity tables contained signficiant amounts of categorical information that was by and large aquired uniformly for all or most transactions. While there are still new missing values that we now need to deal with in addition to our initial transaction table ones, the impact could have been worse.
+If you want, at this point you can check the dimensions of the new train and test tables to confirm the join was done properly and use the `head()` function to see if the addition of the identity tables made our missing values problem worse.
 
 ```
 > (dim(train)) 
@@ -254,7 +254,7 @@ If you want, at this point you can check the dimensions of the new train and tes
 
 ### *Missing Values*
 
-After looking at the combined data, we can get started on dealing with its missing variables. As a first step to this, we can use the `is.na()` function in combination with the `colSums()` function to calculate just how many columns in our data have missing values. We can then use print statements to show us a clean look at the scale of the missing values problem. Using the code below, we now know 409 out of 434 train columns and 380 out of 435 test columns are missing values.
+After looking at the combined data, we can get started on dealing with its missing variables. As a first step to this, we can use the `is.na()` function in combination with the `colSums()` function to calculate just how many columns in our data have missing values. We can then use print statements to show us a clean look at the scale of the missing values problem.
 
 ```
 > missing_train <- colSums(is.na(train))[colSums(is.na(train)) > 0] %>% sort(decreasing=T)
@@ -266,7 +266,7 @@ After looking at the combined data, we can get started on dealing with its missi
 [1] "380 columns out of 433 have missing values in test"
 ```
 
-While the above code is helpful for getting a grasp on the overall number of columns missing values, we still don't know how bad the problem is for each individual column. Using our previously defined `missing_train` and `missing_test` numeric_lists, we can divide each by the number of rows in the train and test tables to get and print the proportion of missing values for each column. For a more visual look at the problem, we can also create histograms showing missing values for the train and test sets. As the resulting charts show, a significant number of columns in both the train and test set are missing more than 80% of their values, suggesting drastic actions may need to be taken.
+While the above code is helpful for getting a grasp on the overall number of columns missing values, we still don't know how bad the problem is for each individual column.
 
 ```
 (missing_train_pct <- round(missing_train/nrow(train), 2))
@@ -279,7 +279,7 @@ hist(missing_test_pct,xlab = 'Percent of Values Missing',main='Missing Values fo
 
 <img src="Train_Missing.png" alt="Missing Values for Train Columns" width="750"/>
 
-Specifically, we decided the best way to handle the missing values is to drop the columns that have are missing more than a certain proportion of their values. This is similar to the method used in the original code we critiqued with the exception that, while they used 0.95 as the dividing line, we used 0.85. We can then use the `length()` function on both `drop_test_col` and `drop_train_col` to see how many columns we dropped as a result of this.
+Specifically, we decided the best way to handle the missing values is to drop the columns that have are missing more than a certain proportion of their values. We can then use the `length()` function on both `drop_test_col` and `drop_train_col` to see how many columns we dropped as a result of this.
 
 ```
 > drop_test_col <- names(which(missing_test_pct>0.85))
@@ -298,7 +298,11 @@ We can also use `setdiff(drop_train_col, drop_test_col)`to check if the variable
 
 ### Data Preparation
 
-Entering the data preparation phase, the first thing we need to do is identify our target variable. Given the purpose of this competition was to identify fraudulent transactions, one would be correct in guessing that Y variable is `isFraud`. The problem is that `isFraud` is currently read in R as an integer variable when we want it instead to be a factor, so before we can make full use of it we need to change it using `target_var <- factor(train$isFraud)`. We can then use the `class()` function on `target_var` to ensure the change was made.
+Entering the data preparation phase, the first thing we need to do is identify our target variable, `isFraud`, and convert it from an integer variable to a factor.
+
+```
+target_var <- factor(train$isFraud).
+```
 
 Following this, we're able to make the full dataset by binding together `train` and `test`.
 
@@ -342,7 +346,7 @@ del_vars <- missing_rate[missing_rate> 0.85] %>% names
 (full <- full[ , !(names(full) %in% del_vars)])
 ```
 
-After this we move onto one of the other contributions of my group to the model, namely the idea to convert numerical values to integers with the goal of saving computational memory. As can be seen in the bottom snippet of code and its output, the overall size of the file reduces substantially.
+After this we move onto one of the other contributions of my group to the model, namely the idea to convert numerical values to integers with the goal of saving computational memory.
 
 ```
 (numeric_vars <- inspect_num(full)$col_name)
@@ -409,7 +413,7 @@ dtest <- xgb.DMatrix(data = x_test, label=y_test)
 watchlist <- list(train = dtrain, test = dtest)
 ```
 
-Once our data has been turned into XGB matrices, we're ready to actually train our model. Specifically, we trained our model over the course of 500 rounds with the caveat that training cease should the model's performance not improve for 20 rounds (It should be noted this can take awhile depending on the machine it's being run on). We can then save the model using `xgb.save(model_xgb, 'ml2_tp2_xgb.model')`. Below the code for the model is a graph showing the model's steady improvement over its first 100 rounds. 
+Once our data has been turned into XGB matrices, we're ready to actually train our model. Specifically, we trained our model over the course of 500 rounds with the caveat that training cease should the model's performance not improve for 20 rounds (It should be noted this can take awhile depending on the machine it's being run on). We can then save the model using `xgb.save(model_xgb, 'ml2_tp2_xgb.model')`. Below the code for the model is a graph showing the model's steady improvement over its 500 rounds. 
 
 ```
 tic("Start training with xgb.train")
@@ -445,4 +449,4 @@ Now that our model has been trained, our final step is to use it for predictions
 
 ### Reproducibility
 
-When thinking about the reproducibility of our model, we followed as many of the guidelines set in the Machine Learning Reproducibility Checklist as were applicable to our solution. Specifically, we tried to be as transparent as possible when discussing topics such as the circumstances of the problem, the technical complexity of our code, and how we handled and processed our data. This can be seen in the reporting of aspects of our model such as how we handled missing variables or performed our train/test split. We've also tried to accomplish these guidelines in different ways, as can be seen in our inclusion of charts showing the forward progress of our model as it trains as well as the central tendency and variation of its scores. Having said this, there were also some aspects of the guidelines we didn't feel were particularly relevant to our solution, such as the section on theoretical claims.
+When thinking about the reproducibility of our model, we followed as many of the guidelines set in the Machine Learning Reproducibility Checklist as were applicable to our solution. Specifically, we tried to be as transparent as possible when discussing topics such as the circumstances of the problem, the technical complexity of our code, and how we handled and processed our data. This can be seen in the reporting of aspects of our model such as how we handled missing variables or performed our train/test split. We've also tried to accomplish these guidelines in different ways, as can be seen in our inclusion of charts showing the forward progress of our model as it trains as well as the central tendency. Having said this, there were also some aspects of the guidelines we didn't feel were particularly relevant to our solution, such as the section on theoretical claims.
