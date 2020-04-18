@@ -153,7 +153,7 @@ del_vars <- missing_rate[missing_rate> 0.85] %>% names
 (full <- full[ , !(names(full) %in% del_vars)])
 ```
 
-After this we move onto one of the other contributions of my group to the model, namely the idea to convert numerical values to integers with the goal of saving computational memory. Using the below code, the overall size of the file reduces substantial, going in one instance from 2.79 Gb to 1.53 Gb.
+After this we move onto one of the other contributions of my group to the model, namely the idea to convert numerical values to integers with the goal of saving computational memory. As can be seen in the bottom snippet of code and its output, the overall size of the file reduces substantially.
 
 ```
 (numeric_vars <- inspect_num(full)$col_name)
@@ -169,10 +169,17 @@ toc()
 
 int_vars <- names(int_idx)[int_idx]
 paste("Number of numeric variables that we can convert to interger:", length(int_vars))
+```
 
-before <- object.size(full)
-
-invisible(gc())
+```
+> before <- object.size(full)
+> print(paste("Before :", format(before, units = "MB")))  #"Before : 2949.8 Mb"
+[1] "Before : 2794.9 Mb"
+> 
+> full[int_vars] <- lapply(full[int_vars], as.integer)
+> after <- object.size(full)
+> print(paste("After :", format(after, units = "MB") ))   # "After : 1652.3 Mb"
+[1] "After : 1530.8 Mb"
 ```
 
 Now that we've converted our numeric values to integers, we can deal with our other categorical variables. The key to this process is to do the same thing for our other categorical variables as we did to the `isFraud` variable when identifying it as our target. Specifically, we need to take these variables and turn them into factors. 
